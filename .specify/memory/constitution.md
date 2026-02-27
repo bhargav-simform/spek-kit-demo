@@ -1,152 +1,304 @@
-# Spek-Kit Demo Constitution
+# Project Constitution
 
 ## Core Principles
 
-### I. Type Safety First (NON-NEGOTIABLE)
-**Strict TypeScript with zero compromises:**
-- TypeScript strict mode enabled at all times (`strict: true` in tsconfig)
-- No `any` types permitted - use `unknown` with proper type guards when needed
-- All function parameters, return types, and variables must be explicitly typed
-- No type assertions (`as`) without thorough justification and code review
-- All props interfaces must be properly defined with required/optional flags
-- Use discriminated unions for complex state management
-- Enable all strict TypeScript compiler options: `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`, `strictPropertyInitialization`
+This document establishes the foundational principles and standards for our project. All team members and contributors must adhere to these guidelines to ensure consistency, quality, and maintainability.
 
-### II. Code Quality & Standards
-**Consistency through automated enforcement:**
-- ESLint rules are law - zero warnings or errors permitted in production code
-- Prettier formatting is mandatory - configure pre-commit hooks to enforce
-- All code must pass linting before commit
-- Follow React best practices: hooks rules, component composition, proper dependency arrays
-- Use functional components exclusively - no class components
-- Implement proper error boundaries for all major feature sections
-- Dead code and unused imports must be removed
-- Comments required for complex business logic only - code should be self-documenting
+---
 
-### III. Testing Standards (NON-NEGOTIABLE)
-**Test coverage ensures reliability:**
-- Minimum 80% code coverage for all production code
-- Unit tests required for:
-  - All custom hooks
-  - All utility functions
-  - All business logic
-- Component tests required for:
-  - User interaction flows
-  - Conditional rendering logic
-  - State management
-- Integration tests required for:
-  - API integrations
-  - Cross-component workflows
-  - Critical user journeys
-- Tests must be written before or alongside implementation (TDD encouraged)
-- All tests must pass before merge to main branch
-- Use React Testing Library for component tests - avoid implementation details
-- Mock external dependencies appropriately
+## 1. Test-Driven Development (TDD)
 
-### IV. User Experience Consistency
-**Seamless, responsive, and accessible design:**
-- Tailwind CSS is the sole styling solution - no inline styles or CSS modules
-- Responsive design mandatory: mobile-first approach (sm, md, lg, xl, 2xl breakpoints)
-- All components must work seamlessly across:
-  - Mobile (320px - 640px)
-  - Tablet (641px - 1024px)
-  - Desktop (1025px+)
-- Consistent spacing using Tailwind spacing scale (4px increments)
-- Consistent color palette defined in `tailwind.config` - no arbitrary color values
-- Accessibility requirements:
-  - WCAG 2.1 AA compliance minimum
-  - Proper semantic HTML
-  - ARIA labels where needed
-  - Keyboard navigation support
-  - Screen reader compatibility
-- Loading states and error states for all async operations
-- Smooth transitions and animations (prefer Tailwind transitions)
+### Principle
 
-### V. Performance Requirements
-**Fast, efficient, and optimized:**
-- Bundle size monitoring:
-  - Initial bundle < 200KB (gzipped)
-  - Route-based code splitting for pages > 50KB
-- React optimization patterns:
-  - Proper use of `useMemo`, `useCallback` for expensive operations
-  - Lazy loading for routes and heavy components
-  - Virtualization for long lists (>100 items)
-- Image optimization:
-  - WebP format preferred
-  - Responsive images with proper srcset
-  - Lazy loading for below-the-fold images
-- Web Vitals targets:
-  - LCP (Largest Contentful Paint) < 2.5s
-  - FID (First Input Delay) < 100ms
-  - CLS (Cumulative Layout Shift) < 0.1
-- No unnecessary re-renders - use React DevTools Profiler to verify
+**Tests MUST be written before implementation code.** TDD is not optional—it is the foundation of our development process.
 
-## Technology Stack Requirements
+### Standards
 
-### Mandatory Technologies
-- **React**: Latest stable version (18.x+) with React 18 features (concurrent rendering, transitions)
-- **TypeScript**: Latest stable version (5.x+) with strict mode
-- **Vite**: For build tooling and dev server
-- **Tailwind CSS**: For all styling needs (v3.x+)
-- **ESLint**: With React, TypeScript, and accessibility plugins
-- **Prettier**: For code formatting
+- **Red-Green-Refactor Cycle**:
+  1. Write a failing test (Red)
+  2. Write minimal code to make it pass (Green)
+  3. Refactor while keeping tests green
+- **Test Coverage**: Minimum 80% code coverage for all new code
+- **Test Types**:
+  - Unit tests for all functions, components, and modules
+  - Integration tests for component interactions
+  - End-to-end tests for critical user flows
+- **No Untested Code**: Code without tests will be rejected in code review
+- **Test Documentation**: Each test must clearly describe what it validates
 
-### Package Compatibility
-- All dependencies must be compatible with React 18+
-- Use npm/yarn/pnpm workspaces for monorepo structure if needed
-- Regularly update dependencies (monthly security checks minimum)
-- Peer dependencies must be satisfied
-- No deprecated packages in production dependencies
+### Enforcement
 
-### Forbidden Practices
-- No mixing CSS frameworks (no Bootstrap, Material-UI, etc. with Tailwind)
-- No direct DOM manipulation (use React refs sparingly)
-- No jQuery or similar libraries
-- No runtime type checking libraries (use TypeScript)
-- No PropTypes (TypeScript provides type safety)
+- Pre-commit hooks must verify test coverage thresholds
+- CI/CD pipeline must fail if coverage drops below 80%
+- Pull requests must include tests for all new features and bug fixes
 
-## Development Workflow
+---
+
+## 2. Code Quality Standards
+
+### Principle
+
+**Code must be clean, maintainable, and self-documenting.**
+
+### SonarQube Compliance
+
+- **Zero Critical Issues**: No critical or blocker issues allowed in production
+- **Technical Debt**: Keep technical debt ratio below 5%
+- **Code Smells**: Address all major code smells before merging
+- **Duplication**: Maximum 3% code duplication allowed
+- **Cognitive Complexity**: Functions should have cognitive complexity < 15
+
+### ESLint Rules
+
+- **Strict Mode**: Use strict ESLint configuration (no eslint-disable without justification)
+- **Type Safety**: Enable all TypeScript strict checks
+- **React Best Practices**: Follow React Hooks rules and component guidelines
+- **Naming Conventions**:
+  - PascalCase for components and types
+  - camelCase for functions and variables
+  - UPPER_SNAKE_CASE for constants
+- **File Organization**: One component per file, index files only for exports
+
+### Prettier Configuration
+
+- **Automatic Formatting**: All code must be formatted with Prettier before commit
+- **Settings**:
+  ```json
+  {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "arrowParens": "avoid"
+  }
+  ```
+- **Pre-commit Hook**: Format-on-save enabled, pre-commit hook enforces formatting
 
 ### Code Review Requirements
-- All changes require pull request review
-- At least one approval required before merge
-- Automated checks must pass:
-  - ESLint (zero errors/warnings)
-  - Prettier (properly formatted)
-  - TypeScript compilation (zero errors)
-  - All tests passing
-  - Build succeeds
-- Performance impact assessment for UI changes
 
-### Git Workflow
-- Feature branches from `main`
-- Conventional commit messages: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
-- Squash and merge to keep clean history
-- Protected main branch
+- Minimum 2 approvals for production code
+- All comments must be addressed
+- No force pushes to main/development branches
+- Squash commits to keep history clean
 
-### Quality Gates
-1. **Pre-commit**: Lint-staged runs Prettier and ESLint on staged files
-2. **Pre-push**: All tests must pass
-3. **CI/CD**: Full test suite, build verification, bundle size check
-4. **Pre-merge**: Code review approval + all CI checks passing
+---
 
-## Governance
+## 3. User Experience (UX) Consistency
 
-**This constitution is the supreme authority for all development decisions.**
+### Principle
 
-- All code must comply with these principles - no exceptions without formal amendment
-- Performance requirements are measured and enforced in CI/CD pipeline
-- Accessibility compliance is verified through automated and manual testing
-- Breaking this constitution requires:
-  1. Written justification
-  2. Team discussion and consensus
-  3. Documentation of temporary exception
-  4. Plan to resolve exception
-- Constitution amendments require:
-  1. Proposal with rationale
-  2. Team review and discussion
-  3. Unanimous approval
-  4. Version increment
-  5. Update of all related documentation
+**Deliver a cohesive, accessible, and delightful user experience across all features.**
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-25 | **Last Amended**: 2026-02-25
+### UI Component Library: shadcn/ui
+
+- **Standard Library**: Use shadcn/ui as the primary component library
+- **Consistency**: All UI components must be built using or extending shadcn/ui components
+- **Customization**: Component variants must follow shadcn/ui patterns
+- **No Mixing**: Do not mix multiple component libraries without architectural approval
+
+### Design System
+
+- **Typography**: Consistent font hierarchy and sizing
+- **Color Palette**: Use defined color tokens from theme
+- **Spacing**: Follow 8px grid system for layouts
+- **Iconography**: Use consistent icon library (Lucide icons recommended with shadcn/ui)
+
+### Accessibility (a11y)
+
+- **WCAG 2.1 Level AA Compliance**: Mandatory for all features
+- **Keyboard Navigation**: All interactive elements must be keyboard accessible
+- **Screen Readers**: Proper ARIA labels and semantic HTML
+- **Color Contrast**: Minimum 4.5:1 contrast ratio for text
+- **Focus Indicators**: Visible focus states for all interactive elements
+
+### Responsive Design
+
+- **Mobile-First**: Design for mobile, enhance for desktop
+- **Breakpoints**:
+  - Mobile: < 640px
+  - Tablet: 640px - 1024px
+  - Desktop: > 1024px
+- **Touch Targets**: Minimum 44x44px for touch interactions
+
+### User Feedback
+
+- **Loading States**: Show loading indicators for async operations
+- **Error Handling**: Clear, actionable error messages
+- **Success Feedback**: Confirm successful actions with visual feedback
+- **Empty States**: Provide helpful guidance when no data is available
+
+---
+
+## 4. Performance Requirements
+
+### Principle
+
+**Deliver fast, efficient, and optimized experiences on all devices and network conditions.**
+
+### Core Web Vitals
+
+- **Largest Contentful Paint (LCP)**: < 2.5 seconds
+- **First Input Delay (FID)**: < 100 milliseconds
+- **Cumulative Layout Shift (CLS)**: < 0.1
+- **Time to Interactive (TTI)**: < 3.5 seconds
+
+### Bundle Size
+
+- **Initial Bundle**: < 200KB (gzipped)
+- **Code Splitting**: Lazy load routes and heavy components
+- **Tree Shaking**: Ensure unused code is eliminated
+- **Dependencies**: Audit and minimize third-party dependencies
+
+### React Performance
+
+- **Memoization**: Use React.memo, useMemo, and useCallback appropriately
+- **Virtual Scrolling**: Implement for lists > 100 items
+- **Debouncing/Throttling**: Apply to expensive operations (search, resize, scroll)
+- **Avoid Inline Functions**: Define callbacks outside render when possible
+- **Key Props**: Always use stable, unique keys for list items
+
+### Asset Optimization
+
+- **Images**:
+  - Use modern formats (WebP, AVIF)
+  - Lazy load off-screen images
+  - Provide responsive image sizes
+  - Compress to appropriate quality
+- **Fonts**:
+  - Subset fonts to reduce size
+  - Use font-display: swap
+  - Preload critical fonts
+- **CSS**:
+  - Critical CSS inline for above-the-fold content
+  - Minimize unused CSS
+
+### API & Data
+
+- **Caching**: Implement appropriate caching strategies
+- **Pagination**: Use pagination for large data sets
+- **Optimistic Updates**: Update UI before server confirmation
+- **Request Batching**: Batch multiple API calls when possible
+- **Error Retry Logic**: Implement exponential backoff for failed requests
+
+### Monitoring
+
+- **Performance Budgets**: Enforce in CI/CD pipeline
+- **Real User Monitoring (RUM)**: Track actual user performance metrics
+- **Lighthouse CI**: Run Lighthouse tests in CI/CD (minimum score: 90)
+- **Bundle Analysis**: Regular analysis of bundle composition
+
+---
+
+## 5. Development Workflow
+
+### Version Control
+
+- **Branching Strategy**: GitFlow (main, develop, feature/_, hotfix/_)
+- **Commit Messages**: Follow Conventional Commits specification
+  ```
+  feat: add user authentication
+  fix: resolve memory leak in dashboard
+  test: add tests for payment component
+  docs: update API documentation
+  refactor: simplify state management logic
+  ```
+
+### Continuous Integration/Continuous Deployment
+
+- **Automated Testing**: All tests run on every push
+- **Linting & Formatting**: Automated checks in CI pipeline
+- **SonarQube Scan**: Run on every PR
+- **Performance Tests**: Run Lighthouse CI on every build
+- **Deployment**: Automatic deployment to staging on develop branch
+
+### Documentation
+
+- **Code Comments**: Document complex logic and business rules
+- **README**: Keep project README up-to-date
+- **API Documentation**: Document all API endpoints and data contracts
+- **Component Documentation**: Storybook for all reusable components
+- **Architecture Decisions**: Record ADRs (Architecture Decision Records)
+
+---
+
+## 6. Security & Privacy
+
+### Standards
+
+- **No Hardcoded Secrets**: Use environment variables
+- **Input Validation**: Validate and sanitize all user inputs
+- **Authentication**: Secure authentication mechanisms
+- **Authorization**: Proper access control checks
+- **HTTPS Only**: All production traffic over HTTPS
+- **Dependency Scanning**: Regular security audits of dependencies
+- **Data Privacy**: Comply with GDPR and relevant regulations
+
+---
+
+## 7. Maintainability
+
+### Code Organization
+
+- **DRY Principle**: Don't Repeat Yourself
+- **SOLID Principles**: Follow object-oriented design principles
+- **Separation of Concerns**: Clear boundaries between layers
+- **Feature-Based Structure**: Organize code by feature, not by type
+
+### Dependencies
+
+- **Minimal Dependencies**: Justify every dependency addition
+- **Regular Updates**: Update dependencies quarterly
+- **Deprecation Plan**: Address deprecated packages promptly
+
+### Technical Debt
+
+- **Track It**: Log technical debt as issues
+- **Allocate Time**: Spend 20% of sprint capacity on tech debt
+- **Prevent It**: Don't add to debt without a payback plan
+
+---
+
+## Enforcement & Continuous Improvement
+
+### Pre-commit Hooks
+
+```bash
+- Run Prettier formatting
+- Run ESLint checks
+- Run unit tests
+- Check test coverage
+```
+
+### Pre-push Hooks
+
+```bash
+- Run all tests
+- Run type checking
+- Run SonarQube local scan
+```
+
+### Review & Adaptation
+
+- Review this constitution quarterly
+- Adapt based on team feedback and project needs
+- Document changes with rationale
+
+---
+
+## Conclusion
+
+This constitution is a living document that guides our development practices. By adhering to these principles, we ensure:
+
+- ✅ High-quality, tested code
+- ✅ Consistent, accessible user experiences
+- ✅ Fast, performant applications
+- ✅ Maintainable, sustainable codebases
+
+**Remember**: These are not suggestions—they are commitments we make to our users, our team, and our craft.
+
+---
+
+_Last Updated: February 27, 2026_
+_Version: 1.0.0_
