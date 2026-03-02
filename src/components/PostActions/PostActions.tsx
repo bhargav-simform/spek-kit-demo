@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle, Share2 } from 'lucide-react';
+import { MessageCircle, Share2, Edit, Trash2 } from 'lucide-react';
 import { LikeButton } from '@/components/LikeButton';
 import { EngagementMetrics } from '@/components/EngagementMetrics';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,13 @@ export interface PostActionsProps {
   onLike: () => void;
   onComment?: () => void;
   onShare?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   className?: string;
 }
 
 /**
- * PostActions component displays interactive buttons (like, comment, share)
+ * PostActions component displays interactive buttons (like, comment, share, edit, delete)
  * and engagement metrics for a post
  */
 export const PostActions: React.FC<PostActionsProps> = ({
@@ -25,6 +27,8 @@ export const PostActions: React.FC<PostActionsProps> = ({
   onLike,
   onComment,
   onShare,
+  onEdit,
+  onDelete,
   className,
 }) => {
   return (
@@ -52,6 +56,32 @@ export const PostActions: React.FC<PostActionsProps> = ({
         >
           <Share2 className="h-5 w-5" aria-hidden="true" />
         </Button>
+
+        {/* Edit button - only shown if onEdit provided */}
+        {onEdit && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onEdit}
+            aria-label="Edit post"
+            className="text-gray-500 hover:text-blue-600 transition-colors"
+          >
+            <Edit className="h-5 w-5" aria-hidden="true" />
+          </Button>
+        )}
+
+        {/* Delete button - only shown if onDelete provided */}
+        {onDelete && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onDelete}
+            aria-label="Delete post"
+            className="text-gray-500 hover:text-red-600 transition-colors"
+          >
+            <Trash2 className="h-5 w-5" aria-hidden="true" />
+          </Button>
+        )}
       </div>
 
       {/* Engagement metrics */}

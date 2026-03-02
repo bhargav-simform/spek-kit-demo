@@ -10,6 +10,8 @@ export interface PostGridProps {
   onComment?: (postId: number) => void;
   onShare?: (postId: number) => void;
   onMenu?: (postId: number) => void;
+  onEdit?: (post: PostType) => void;
+  onDelete?: (post: PostType) => void;
   className?: string;
 }
 
@@ -23,6 +25,8 @@ export const PostGrid: React.FC<PostGridProps> = ({
   onComment,
   onShare,
   onMenu,
+  onEdit,
+  onDelete,
   className,
 }) => {
   // Empty state
@@ -55,6 +59,8 @@ export const PostGrid: React.FC<PostGridProps> = ({
           onComment={onComment}
           onShare={onShare}
           onMenu={onMenu}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </div>

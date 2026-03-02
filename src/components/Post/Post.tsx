@@ -13,6 +13,8 @@ export interface PostProps {
   onComment?: (postId: number) => void;
   onShare?: (postId: number) => void;
   onMenu?: (postId: number) => void;
+  onEdit?: (post: PostType) => void;
+  onDelete?: (post: PostType) => void;
   className?: string;
 }
 
@@ -26,6 +28,8 @@ export const Post: React.FC<PostProps> = ({
   onComment,
   onShare,
   onMenu,
+  onEdit,
+  onDelete,
   className,
 }) => {
   // If no user data, create a placeholder (shouldn't happen but defensive)
@@ -61,6 +65,8 @@ export const Post: React.FC<PostProps> = ({
             onLike={() => onLike(post.id)}
             onComment={onComment ? () => onComment(post.id) : undefined}
             onShare={onShare ? () => onShare(post.id) : undefined}
+            onEdit={onEdit ? () => onEdit(post) : undefined}
+            onDelete={onDelete ? () => onDelete(post) : undefined}
           />
         </CardContent>
       </Card>

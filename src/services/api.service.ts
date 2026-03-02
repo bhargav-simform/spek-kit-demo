@@ -3,6 +3,8 @@ import type {
   User,
   Comment,
   JSONPlaceholderPost,
+  CreatePostRequest,
+  UpdatePostRequest,
 } from '@/types/post.types';
 
 const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
@@ -83,4 +85,62 @@ export async function getComments(postId: number): Promise<Comment[]> {
   }
 
   return response.json();
+}
+
+/**
+ * Create a new post
+ */
+export async function createPost(request: CreatePostRequest): Promise<Post> {
+  const response = await fetch(`${API_BASE_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data: JSONPlaceholderPost = await response.json();
+  return transformPost(data);
+}
+
+/**
+ * Update an existing post
+ */
+export async function updatePost(request: UpdatePostRequest): Promise<Post> {
+  const { id, ...updateData } = request;
+
+  const response = await fetch(`${API_BASE_URL}/posts/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updateData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data: JSONPlaceholderPost = await response.json();
+  return transformPost(data);
+}
+
+/**
+ * Delete a post
+ */
+export async function deletePost(postId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  // JSONPlaceholder returns an empty object on successful deletion
+  await response.json();
 }

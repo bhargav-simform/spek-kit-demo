@@ -1,19 +1,74 @@
+import { useState } from 'react';
 import { PostGrid } from '@/components/PostGrid';
+import { PostDialog } from '@/components/PostDialog';
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { usePosts } from '@/contexts/PostsContext';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Plus } from 'lucide-react';
+import type { Post } from '@/types/post.types';
 
 function App() {
-  const { posts, loading, error, refreshPosts, toggleLike } = usePosts();
+  const {
+    posts,
+    loading,
+    error,
+    refreshPosts,
+    toggleLike,
+    createPost,
+    updatePost,
+    deletePost,
+  } = usePosts();
+
+  // Dialog states
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  // CRUD handlers
+  const handleCreatePost = async (values: { title: string; body: string }) => {
+    await createPost({
+      ...values,
+      userId: 1, // Using default user ID for demo
+    });
+  };
+
+  const handleEditPost = (post: Post) => {
+    setSelectedPost(post);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdatePost = async (values: { title: string; body: string }) => {
+    if (!selectedPost) return;
+    await updatePost({
+      id: selectedPost.id,
+      ...values,
+    });
+  };
+
+  const handleDeletePost = (post: Post) => {
+    setSelectedPost(post);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedPost) return;
+    await deletePost(selectedPost.id);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Social Media Posts
           </h1>
+          <Button onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="h-5 w-5 mr-2" />
+            Create Post
+          </Button>
         </div>
       </header>
 
@@ -58,8 +113,41 @@ function App() {
         )}
 
         {/* Posts Grid */}
-        {!loading && !error && <PostGrid posts={posts} onLike={toggleLike} />}
+        {!loading && !error && (
+          <PostGrid
+            posts={posts}
+            onLike={toggleLike}
+            onEdit={handleEditPost}
+            onDelete={handleDeletePost}
+          />
+        )}
       </main>
+
+      {/* Create Post Dialog */}
+      <PostDialog
+        mode="create"
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onSubmit={handleCreatePost}
+      />
+
+      {/* Edit Post Dialog */}
+      <PostDialog
+        mode="edit"
+        post={selectedPost || undefined}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSubmit={handleUpdatePost}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="Delete Post?"
+        description="This will permanently delete this post. This action cannot be undone."
+      />
     </div>
   );
 }

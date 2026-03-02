@@ -53,3 +53,49 @@ export interface JSONPlaceholderPost {
   title: string;
   body: string;
 }
+
+/**
+ * Request payload for creating a new post
+ */
+export interface CreatePostRequest {
+  title: string;
+  body: string;
+  userId: number;
+}
+
+/**
+ * Request payload for updating an existing post
+ */
+export interface UpdatePostRequest {
+  id: number;
+  title: string;
+  body: string;
+}
+
+/**
+ * Form validation errors
+ */
+export interface FormErrors {
+  title?: string;
+  body?: string;
+  submit?: string;
+}
+
+/**
+ * Tracks which form fields have been touched/interacted with
+ */
+export interface TouchedFields {
+  title: boolean;
+  body: boolean;
+}
+
+/**
+ * Complete form state for post creation/editing
+ */
+export interface PostFormData {
+  title: string;
+  body: string;
+  errors: FormErrors;
+  touched: TouchedFields;
+  isSubmitting: boolean;
+}
